@@ -52,7 +52,7 @@ public class Universe {
 
     private final Effect gravity = new Effect() {
         @Override
-        public boolean tick(Entity e, Options o) {
+        public boolean tick(Entity e) {
             final Physics p = e.getPhysics();
             p.vy -= 100L;
             return true;
@@ -60,7 +60,7 @@ public class Universe {
     };
     private final Effect friction = new Effect() {
         @Override
-        public boolean tick(Entity e, Options o) {
+        public boolean tick(Entity e) {
             final Physics p = e.getPhysics();
             if (p.vx != 0) {
                 p.vx *= 0.90;

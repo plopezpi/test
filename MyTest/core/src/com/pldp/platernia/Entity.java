@@ -6,7 +6,6 @@ import java.util.List;
 
 public class Entity {
     private String name;
-    private Options options = new Options();
     private List<Effect> effects = new ArrayList<Effect>();
     private Rectangle rectangle = new Rectangle();
     private Physics physics = new Physics();
@@ -20,19 +19,18 @@ public class Entity {
 
     public boolean tick() {
         for (Effect e : effects) {
-            e.tick(this, options);
+            e.tick(this);
         }
         updatePos();
         return true;
     }
 
-    public void updatePos() {
+    private void updatePos() {
         physics.tick();
         if (physics.vx != 0) {
             long dx = physics.vx;
             Rectangle nr = new Rectangle(rectangle);
             nr.x += dx;
-            Entity cx = null;
             for(Entity e: u.getEntities()) {
                 if(!e.collidable) continue;
                 if(nr.collides(e.getRectangle())) {
@@ -40,11 +38,7 @@ public class Entity {
                     dx = rectangle.getLeewayX(e.getRectangle());
                     nr.x = rectangle.x + dx;
                     physics.vx = 0;
-                    cx = e;
                 }
-            }
-            if(cx != null) {
-                onCollide(cx, dx, 0);
             }
             rectangle.x += dx;
         }
@@ -52,7 +46,6 @@ public class Entity {
             long dy = physics.vy;
             Rectangle nr = new Rectangle(rectangle);
             nr.y += dy;
-            Entity cx = null;
             for(Entity e: u.getEntities()) {
                 if(!e.collidable) continue;
                 if(nr.collides(e.getRectangle())) {
@@ -60,42 +53,14 @@ public class Entity {
                     dy = rectangle.getLeewayY(e.getRectangle());
                     nr.y = rectangle.y + dy;
                     physics.vy = 0;
-                    cx = e;
                 }
-            }
-            if(cx != null) {
-                onCollide(cx, 0, dy);
             }
             rectangle.y += dy;
         }
     }
     
-    public void onCollide(Entity e, long dx, long dy) {
-        
-    }
-    
-    public void say(String str) {
+    private void say(String str) {
         System.out.println(String.format("[%.2f][%s] %s", Math.random(), name, str));
-    }
-
-    public boolean canPlace(Rectangle r) {
-        for (Entity e : u.getEntities()) {
-            if (e == this) {
-                continue;
-            }
-            if (r.collides(e.getRectangle())) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public Options getOptions() {
-        return options;
-    }
-
-    public void setOptions(Options options) {
-        this.options = options;
     }
 
     public List<Effect> getEffects() {

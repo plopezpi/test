@@ -17,7 +17,7 @@ public class Skinner {
         public float v2;
     }
 
-    public static void add(List<Sprite> ret, long x, long y, long idx) {
+    private static void add(List<Sprite> ret, long x, long y, long idx) {
         final float dx = 1.f / 12;
         final float dy = 1.f / 10;
         Sprite s = new Sprite();

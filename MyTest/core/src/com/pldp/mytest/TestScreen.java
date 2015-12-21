@@ -1,5 +1,6 @@
 package com.pldp.mytest;
 
+import static com.badlogic.gdx.Application.ApplicationType.Android;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -17,9 +18,8 @@ import com.pldp.util.Controller;
 import com.pldp.util.Input;
 import java.util.List;
 
-public class TestScreen implements Screen {
+public class TestScreen implements BaseScreen {
 
-    private final MyTest game;
     private final Texture img;
     private final Texture skin;
     private final OrthographicCamera camera;
@@ -34,23 +34,17 @@ public class TestScreen implements Screen {
     private final List<Sprite> spritesFg;
 
     public TestScreen(final MyTest game) {
-        this.game = game;
+        super(game);
         this.o = new Options();
         controller = new Controller(input, game.batch);
         img = new Texture(Gdx.files.internal("badlogic.jpg"));
         skin = new Texture(Gdx.files.internal("skin.png"));
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         Stage s = new Stage("1.bmp");
         spritesBg = Skinner.skinBg(s);
         spritesFg = Skinner.skinFg(s);
         u = s.createUniverse(o);
         e = u.getEntity("Player");
-    }
-
-    @Override
-    public void show() {
     }
 
     long dx;
@@ -115,11 +109,11 @@ public class TestScreen implements Screen {
     private String processInput(float delta) {
         long v = 10000L;
         input.update(camera);
-        if (controller.left()) {
+        if (controller.left() && !controller.right()) {
             final Physics p = e.getPhysics();
             p.vx -= v * delta;
         }
-        if (controller.right()) {
+        if (controller.right() && !controller.left()) {
             final Physics p = e.getPhysics();
             p.vx += v * delta;
         }
@@ -134,10 +128,7 @@ public class TestScreen implements Screen {
         return doDrag();
     }
 
-    @Override
-    public void resize(int width, int height) {
-        camera.setToOrtho(false, width, height);
-    }
+    
 
     @Override
     public void pause() {
